@@ -23,9 +23,9 @@ async function persist(object: object): Promise<any> {
 
   if (object instanceof User) {
     table = "user";
-    columns = "(email, password)";
-    col_cnt = 2;
-    values = [object.email, object.password];
+    columns = "(email, password, oa_token)";
+    col_cnt = 3;
+    values = [object.email, object.password, object.oa_token];
   } else {
     console.log("Object not supported!");
     return false;

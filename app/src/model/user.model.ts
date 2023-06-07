@@ -1,9 +1,14 @@
 import bcrypt from "bcrypt";
 
 class User {
-  constructor(public email: string, public password: string) {
+  email: string;
+  password: string = "";
+  oa_token: string;
+
+  constructor(email: string, password: string, oa_token: string) {
     this.email = email;
     this.setPassword(password);
+    this.oa_token = oa_token;
   }
 
   public setPassword(password: string): void {

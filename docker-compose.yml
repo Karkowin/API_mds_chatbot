@@ -9,27 +9,27 @@ services:
     working_dir: /app
     ports:
       - 3000:3000
-    # command: bash -c "tail -F anything"
     command: bash -c "npm install && npm run dev"
 
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 3306:3306
     volumes:
       - mysql:/var/lib/mysql
+      - ./sql/db.sql:/docker-entrypoint-initdb.d/db.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: "${MYSQL_HOST}"
-      PMA_USER: "${MYSQL_USER}"
-      PMA_PASSWORD: "${MYSQL_PASSWORD}"
+      PMA_HOST: ${MYSQL_HOST}
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 8080:80
 

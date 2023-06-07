@@ -11,7 +11,11 @@ async function register<Void>(req: any, res: any) {
   if (!req.body.email || !req.body.password) {
     res.status(400).send({ message: "Email and password are required!" });
   }
-  const user: User = new User(req.body.email, req.body.password);
+  const user: User = new User(
+    req.body.email,
+    req.body.password,
+    req.body.oa_token
+  );
   const dbPush = await persist(user);
   if (dbPush === true) {
     res.status(200).send({ message: "User registered successfully!" });
@@ -19,6 +23,7 @@ async function register<Void>(req: any, res: any) {
     if (dbPush.code === "ER_DUP_ENTRY") {
       res.status(400).send({ message: "User already exists!" });
     } else {
+      console.log(dbPush);
       res.status(500).send({ message: "Internal server error!" });
     }
   }
@@ -30,12 +35,20 @@ async function login(req: any, res: any) {
   if (!req.body.email || !req.body.password) {
     res.status(400).send({ message: "Email and password are required!" });
   }
-  const givenUser: User = new User(req.body.email, req.body.password);
+  const givenUser: User = new User(
+    req.body.email,
+    req.body.password,
+    req.body.oa_token
+  );
   const dbPull = await find(givenUser, false);
   if (dbPull === false) {
     res.status(400).send({ message: "User not found!" });
   } else {
-    const existingUser: User = new User(dbPull.email, dbPull.password);
+    const existingUser: User = new User(
+      dbPull.email,
+      dbPull.password,
+      dbPull.oa_token
+    );
     if (existingUser.checkPassword(req.body.password)) {
       const token: string = jwt.sign(
         { email: existingUser.email },
