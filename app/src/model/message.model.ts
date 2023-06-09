@@ -6,11 +6,11 @@ class Message {
   conversation_id: number;
 
   constructor(
-    id: number | null = null,
     isHuman: boolean,
     content: string = "",
     timestamp: Date,
-    conversation_id: number
+    conversation_id: number,
+    id: number | null = null
   ) {
     this.id = id;
     this.isHuman = isHuman;

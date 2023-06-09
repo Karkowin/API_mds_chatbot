@@ -4,7 +4,7 @@ class Persona {
   universe_id: number;
   description: string = "";
 
-  constructor(id: number | null = null, name: string, universe_id: number) {
+  constructor(name: string, universe_id: number, id: number | null = null) {
     this.id = id;
     this.name = name;
     this.universe_id = universe_id;
