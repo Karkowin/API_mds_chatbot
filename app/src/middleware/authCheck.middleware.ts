@@ -22,8 +22,8 @@ async function authCheck(req: any, res: any, next: any) {
     if (!isValid) {
       res.status(401).send({ message: "Invalid token!" });
     } else {
-      let query = `SELECT * FROM user WHERE email = '${isValid.email}'`;
-      const dbPull = await doQuery(query, false);
+      let query = `SELECT * FROM user WHERE email = ?`;
+      const dbPull = await doQuery(query, [isValid.email], false);
       if (!dbPull) {
         res.status(400).send({ message: "Invalid token!" });
       } else {

@@ -24,18 +24,21 @@ async function create<Void>(req: any, res: any) {
     if (checkPersona) {
       res.status(409).send({ message: "Persona already exists!" });
     } else {
-      let result = await persist(
-        new Persona(req.body.name, req.body.universe_id)
-      );
-      if (result.affectedRows === 1) {
-        res.status(201).send({ id: result.insertId });
-      } else {
-        if (result.code === "ER_DUP_ENTRY") {
-          res.status(409).send({ message: "Persona already exists!" });
+      const persona = new Persona(req.body.name, req.body.universe_id);
+      if (await persona.setDescription(checkUniverse.name, req.userId)) {
+        let result = await persist(persona);
+        if (result.affectedRows === 1) {
+          res.status(201).send({ id: result.insertId });
         } else {
-          console.log(result);
-          res.status(500).send({ message: "Internal server error!" });
+          if (result.code === "ER_DUP_ENTRY") {
+            res.status(409).send({ message: "Persona already exists!" });
+          } else {
+            console.log(result);
+            res.status(500).send({ message: "Internal server error!" });
+          }
         }
+      } else {
+        res.status(500).send({ message: "A problem occurred with the AI!" });
       }
     }
   }

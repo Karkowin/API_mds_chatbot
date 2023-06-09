@@ -1,3 +1,5 @@
+// CLASS
+// --------------------------------------------------------------------------
 class Conversation {
   id: number | null;
   user_id: number;
@@ -10,4 +12,6 @@ class Conversation {
   }
 }
 
+// EXPORTS
+// --------------------------------------------------------------------------
 export default Conversation;

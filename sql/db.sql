@@ -16,7 +16,7 @@ CREATE TABLE persona (
   name VARCHAR(255) NOT NULL,
   universe_id INT NOT NULL,
   FOREIGN KEY (universe_id) REFERENCES universe(id),
-  description VARCHAR(255)
+  description VARCHAR(400)
 );
 
 CREATE TABLE conversation (
@@ -31,7 +31,7 @@ CREATE TABLE conversation (
 CREATE TABLE message (
   id INT AUTO_INCREMENT PRIMARY KEY,
   isHuman BOOLEAN NOT NULL,
-  content VARCHAR(255) NOT NULL,
+  content VARCHAR(350) NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   conversation_id INT NOT NULL,
   FOREIGN KEY (conversation_id) REFERENCES conversation(id)
