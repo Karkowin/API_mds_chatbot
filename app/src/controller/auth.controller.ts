@@ -35,8 +35,8 @@ async function login(req: any, res: any) {
   if (!req.body.email || !req.body.password) {
     res.status(400).send({ message: "Email and password are required!" });
   }
-  let query = `SELECT * FROM user WHERE email = '${req.body.email}'`;
-  const dbPull = await doQuery(query, false);
+  let query = `SELECT * FROM user WHERE email = ?`;
+  const dbPull = await doQuery(query, [req.body.email], false);
   if (dbPull === false) {
     res.status(400).send({ message: "User not found!" });
   } else {

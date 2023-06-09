@@ -54,9 +54,13 @@ async function persist(object: object): Promise<any> {
 
 // DO QUERY
 // --------------------------------------------------------------------------
-async function doQuery(query: string, multiple: boolean): Promise<any> {
+async function doQuery(
+  query: string,
+  params: any[],
+  multiple: boolean
+): Promise<any> {
   return new Promise<any>((resolve, reject) => {
-    connection.query(query, (err, results: any) => {
+    connection.query(query, params, (err, results: any) => {
       if (err) {
         console.log(err);
         resolve(false);

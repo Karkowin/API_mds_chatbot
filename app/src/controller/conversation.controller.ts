@@ -10,13 +10,17 @@ async function create<Void>(req: any, res: any) {
     res.status(400).send({ message: "Persona id is required!" });
     return;
   }
-  let query = `SELECT * FROM persona WHERE id = '${req.body.persona_id}'`;
-  const checkPersona = await doQuery(query, false);
+  let query = `SELECT * FROM persona WHERE id = ?`;
+  const checkPersona = await doQuery(query, [req.body.persona_id], false);
   if (!checkPersona) {
     res.status(404).send({ message: "Persona not found!" });
   } else {
-    let query = `SELECT * FROM conversation WHERE persona_id = '${req.body.persona_id} AND user_id = '${req.userId}'`;
-    const checkConversation = await doQuery(query, false);
+    let query = `SELECT * FROM conversation WHERE persona_id = ? AND user_id = ?`;
+    const checkConversation = await doQuery(
+      query,
+      [req.body.persona_id, req.userId],
+      false
+    );
     if (checkConversation) {
       res.status(409).send({ message: "Conversation already exists!" });
     } else {
@@ -40,8 +44,8 @@ async function create<Void>(req: any, res: any) {
 // FIND ALL
 // --------------------------------------------------------------------------
 async function findAll<Void>(req: any, res: any) {
-  let query = `SELECT * FROM conversation WHERE user_id = '${req.userId}'`;
-  const result = await doQuery(query, true);
+  let query = `SELECT * FROM conversation WHERE user_id = ?`;
+  const result = await doQuery(query, [req.userId], true);
   if (result) {
     res.status(200).send(result);
   } else {
@@ -56,8 +60,8 @@ async function findOne<Void>(req: any, res: any) {
     res.status(400).send({ message: "Id is required!" });
     return;
   }
-  let query = `SELECT * FROM conversation WHERE id = '${req.params.id}' AND user_id = '${req.userId}'`;
-  const result = await doQuery(query, false);
+  let query = `SELECT * FROM conversation WHERE id = ? AND user_id = ?`;
+  const result = await doQuery(query, [req.params.id, req.userId], false);
   if (result) {
     res.status(200).send(result);
   } else {

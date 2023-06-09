@@ -12,8 +12,12 @@ async function create<Void>(req: any, res: any) {
       .send({ message: "Conversation id and content are required!" });
     return;
   }
-  let query = `SELECT * FROM conversation WHERE id = '${req.body.conversation_id}' AND user_id = '${req.userId}'`;
-  const checkConversation = await doQuery(query, false);
+  let query = `SELECT * FROM conversation WHERE id = ? AND user_id = ?`;
+  const checkConversation = await doQuery(
+    query,
+    [req.body.conversation_id, req.userId],
+    false
+  );
   if (!checkConversation) {
     res.status(404).send({ message: "Conversation not found!" });
   } else {
@@ -32,8 +36,8 @@ async function create<Void>(req: any, res: any) {
 // FIND ALL
 // --------------------------------------------------------------------------
 async function findAll<Void>(req: any, res: any) {
-  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = '${req.userId}' ) AS subquery ORDER BY timestamp ASC`;
-  const result = await doQuery(query, true);
+  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = ? ) AS subquery ORDER BY timestamp ASC`;
+  const result = await doQuery(query, [req.userId], true);
   if (result) {
     res.status(200).send(result);
   } else {
@@ -48,8 +52,8 @@ async function findOne<Void>(req: any, res: any) {
     res.status(400).send({ message: "Id is required!" });
     return;
   }
-  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = '${req.userId}' ) AS subquery WHERE id = '${req.params.id}'`;
-  const result = await doQuery(query, false);
+  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = ? ) AS subquery WHERE id = ?`;
+  const result = await doQuery(query, [req.userId, req.params.id], false);
   if (result) {
     res.status(200).send(result);
   } else {
@@ -64,8 +68,8 @@ async function findAllByConversation<Void>(req: any, res: any) {
     res.status(400).send({ message: "Id is required!" });
     return;
   }
-  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = '${req.userId}' ) AS subquery WHERE conversation_id = '${req.params.id}' ORDER BY timestamp ASC`;
-  const result = await doQuery(query, true);
+  let query = `SELECT * FROM ( SELECT m.* FROM message m JOIN conversation c ON m.conversation_id = c.id WHERE c.user_id = ? ) AS subquery WHERE conversation_id = ? ORDER BY timestamp ASC`;
+  const result = await doQuery(query, [req.userId, req.params.id], true);
   if (result) {
     res.status(200).send(result);
   } else {

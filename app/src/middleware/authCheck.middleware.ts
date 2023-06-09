@@ -2,8 +2,7 @@
 // --------------------------------------------------------------------------
 import jwt from "jsonwebtoken";
 import env from "../env.conf.ts";
-import User from "../model/user.model.ts";
-import { find } from "../tool/db.tool.ts";
+import { doQuery } from "../tool/db.tool.ts";
 
 // AUTH CHECK BEARER
 // --------------------------------------------------------------------------
@@ -23,8 +22,8 @@ async function authCheck(req: any, res: any, next: any) {
     if (!isValid) {
       res.status(401).send({ message: "Invalid token!" });
     } else {
-      let user: User = new User(isValid.email, "", "");
-      let dbPull = await find(user, false);
+      let query = `SELECT * FROM user WHERE email = '${isValid.email}'`;
+      const dbPull = await doQuery(query, false);
       if (!dbPull) {
         res.status(400).send({ message: "Invalid token!" });
       } else {

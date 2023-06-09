@@ -9,8 +9,8 @@ async function create<Void>(req: any, res: any) {
   if (!req.body.name) {
     res.status(400).send({ message: "Name is required!" });
   }
-  let query = `SELECT * FROM universe WHERE name = '${req.body.name}'`;
-  const checkUniverse = await doQuery(query, false);
+  let query = `SELECT * FROM universe WHERE name = ?`;
+  const checkUniverse = await doQuery(query, [req.body.name], false);
   if (checkUniverse) {
     res.status(409).send({ message: "Universe already exists!" });
   } else {
@@ -32,7 +32,7 @@ async function create<Void>(req: any, res: any) {
 // --------------------------------------------------------------------------
 async function findAll<Void>(req: any, res: any) {
   let query = `SELECT * FROM universe`;
-  const result = await doQuery(query, true);
+  const result = await doQuery(query, [], true);
   if (result) {
     res.status(200).send(result);
   } else {
@@ -46,8 +46,8 @@ async function findOne<Void>(req: any, res: any) {
   if (!req.params.id) {
     res.status(400).send({ message: "Id is required!" });
   }
-  let query = `SELECT * FROM universe WHERE id = '${req.params.id}'`;
-  const result = await doQuery(query, false);
+  let query = `SELECT * FROM universe WHERE id = ?`;
+  const result = await doQuery(query, [req.params.id], false);
   if (result) {
     res.status(200).send(result);
   } else {

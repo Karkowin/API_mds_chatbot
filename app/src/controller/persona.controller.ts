@@ -10,13 +10,17 @@ async function create<Void>(req: any, res: any) {
     res.status(400).send({ message: "Name and universe id are required!" });
     return;
   }
-  let query = `SELECT * FROM universe WHERE id = '${req.body.universe_id}'`;
-  const checkUniverse = await doQuery(query, false);
+  let query = `SELECT * FROM universe WHERE id = ?`;
+  const checkUniverse = await doQuery(query, [req.body.universe_id], false);
   if (!checkUniverse) {
     res.status(404).send({ message: "Universe not found!" });
   } else {
-    let query = `SELECT * FROM persona WHERE name = '${req.body.name}' AND universe_id = '${req.body.universe_id}'`;
-    const checkPersona = await doQuery(query, false);
+    let query = `SELECT * FROM persona WHERE name = ? AND universe_id = ?`;
+    const checkPersona = await doQuery(
+      query,
+      [req.body.name, req.body.universe_id],
+      false
+    );
     if (checkPersona) {
       res.status(409).send({ message: "Persona already exists!" });
     } else {
@@ -41,7 +45,7 @@ async function create<Void>(req: any, res: any) {
 // --------------------------------------------------------------------------
 async function findAll<Void>(req: any, res: any) {
   let query = `SELECT * FROM persona`;
-  const result = await doQuery(query, true);
+  const result = await doQuery(query, [], true);
   if (result) {
     res.status(200).send(result);
   } else {
@@ -56,8 +60,8 @@ async function findOne<Void>(req: any, res: any) {
     res.status(400).send({ message: "Id is required!" });
     return;
   }
-  let query = `SELECT * FROM persona WHERE id = '${req.params.id}'`;
-  const result = await doQuery(query, false);
+  let query = `SELECT * FROM persona WHERE id = ?`;
+  const result = await doQuery(query, [req.params.id], false);
   if (result) {
     res.status(200).send(result);
   } else {
